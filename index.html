@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>小红书 · 智能聚合 | 切换按钮版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        .phone-mock {
+            width: 375px;
+            height: 700px;
+            background: white;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+            scroll-behavior: smooth;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.05), 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .phone-mock::-webkit-scrollbar { width: 3px; }
+        .phone-mock::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+
+        .similar-card { transition: all 0.2s ease; }
+        .similar-card:active { background: #f8f8f8; }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .loading-pulse { animation: pulse 1s ease-in-out infinite; }
+
+        .float-btn {
+            box-shadow: 0 4px 12px rgba(255, 90, 95, 0.3);
+            transition: transform 0.2s ease;
+        }
+        .float-btn:active { transform: scale(0.92); }
+
+        /* Tab切换样式 */
+        .tab-btn {
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            color: #ff5a5f;
+            border-bottom-color: #ff5a5f;
+        }
+        
+        /* 底部弹窗 */
+        .bottom-sheet {
+            transition: transform 0.3s ease;
+            transform: translateY(100%);
+        }
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+<div class="phone-mock" id="app">
+    <!-- ========== 状态栏 + 导航栏 ========== -->
+    <div class="sticky top-0 bg-white z-20">
+        <div class="px-4 pt-2 pb-1 flex justify-between text-xs text-gray-900 font-medium">
+            <span>9:41</span>
+            <div class="flex gap-1"><span>📶</span><span>📶</span><span>🔋</span></div>
+        </div>
+        <div class="px-4 pb-2 flex justify-between items-center border-b border-gray-100">
+            <button onclick="history.back()" class="text-2xl leading-none text-gray-800">←</button>
+            <div class="flex gap-5">
+                <span class="text-xl">❤️</span><span class="text-xl">⭐</span><span class="text-xl">💬</span><span class="text-xl">☰</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 笔记内容区域（上海旅游主题） ========== -->
+    <div class="px-4">
+        <!-- 作者信息 -->
+        <div class="flex items-center justify-between mt-3 mb-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full flex items-center justify-center text-white text-sm font-bold">沪</div>
+                <div>
+                    <div class="font-semibold text-sm flex items-center gap-1">
+                        上海小阿姨
+                        <span class="text-xs text-gray-400">· 2天前</span>
+                    </div>
+                    <div class="text-xs text-gray-400">8.7w阅读</div>
+                </div>
+            </div>
+            <button class="bg-red-500 text-white px-4 py-1.5 rounded-full text-xs font-medium">+ 关注</button>
+        </div>
+
+        <!-- 笔记正文 -->
+        <div class="text-[15px] leading-relaxed text-gray-900">
+            <p class="mb-3 font-bold text-base">🌆 上海3天2夜旅游攻略！本地人推荐不踩雷</p>
+            <p class="mb-3">刚从上海回来，整理了一份超全攻略！预算1500元玩转魔都~</p>
+            
+            <div class="rounded-xl overflow-hidden mb-3 bg-gray-100">
+                <div class="aspect-[4/3] bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center text-gray-400 text-sm flex-col">
+                    <span>📸 外滩夜景/迪士尼/武康路</span>
+                    <span class="text-xs">图片轮播 1/6</span>
+                </div>
+            </div>
+            
+            <p class="mb-2 font-semibold">📅 Day 1：经典地标线</p>
+            <p class="mb-2 text-sm">• 南京路步行街 → 外滩 → 豫园 → 城隍庙<br>• 晚上一定要去外滩看夜景！6点亮灯超震撼</p>
+            
+            <p class="mb-2 font-semibold">📅 Day 2：迪士尼一日游</p>
+            <p class="mb-2 text-sm">• 早享卡7:15入园，先冲“飞越地平线”<br>• 推荐项目：创极速光轮、加勒比海盗</p>
+            
+            <p class="mb-2 font-semibold">📅 Day 3：文艺打卡线</p>
+            <p class="mb-2 text-sm">• 武康大楼 → 安福路 → 新天地<br>• 下午茶推荐：RAC Bar、Alimentari</p>
+            
+            <p class="mb-2 font-semibold">🍜 美食推荐：</p>
+            <p class="mb-2 text-sm">• 小杨生煎、沈大成青团、国际饭店蝴蝶酥</p>
+            
+            <!-- 话题标签 -->
+            <div class="flex flex-wrap gap-2 mb-3">
+                <span class="text-[#ff5a5f] text-sm">#上海旅游</span>
+                <span class="text-[#ff5a5f] text-sm">#迪士尼攻略</span>
+                <span class="text-[#ff5a5f] text-sm">#魔都探店</span>
+            </div>
+            
+            <div class="text-xs text-gray-400 mb-3">编辑于昨天15:30 · 上海</div>
+            
+            <div class="flex items-center gap-1 text-gray-400 text-sm mb-4">
+                <span>👎</span><span>不喜欢</span>
+            </div>
+        </div>
+
+        <!-- ========== 方案A：Tab切换栏 ========== -->
+        <div class="border-t border-gray-100 pt-3">
+            <!-- Tab 切换按钮 -->
+            <div class="flex border-b border-gray-100 mb-3">
+                <button id="tab-comment" class="tab-btn flex-1 py-2 text-center text-sm font-medium text-[#ff5a5f] border-b-2 border-[#ff5a5f]">
+                    💬 评论 <span class="text-xs">128</span>
+                </button>
+                <button id="tab-aggregation" class="tab-btn flex-1 py-2 text-center text-sm font-medium text-gray-500 border-b-2 border-transparent">
+                    🤖 智能聚合
+                </button>
+            </div>
+
+            <!-- 评论内容区域 -->
+            <div id="comment-section">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 bg-gray-200 rounded-full"></div>
+                    <div class="flex-1 text-gray-400 text-sm">留下你的想法吧...</div>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex items-start gap-2">
+                            <div class="w-7 h-7 bg-blue-400 rounded-full flex items-center justify-center text-white text-[10px] font-bold">爱</div>
+                            <div class="flex-1">
+                                <div class="font-medium text-xs">爱旅游的小鱼</div>
+                                <div class="text-xs text-gray-700">刚去完！补充一下：迪士尼可以带未开封的水和零食~</div>
+                                <div class="flex items-center gap-3 mt-1 text-[11px] text-gray-400">
+                                    <span>昨天</span><span>回复</span><span>❤️ 89</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-start gap-2">
+                            <div class="w-7 h-7 bg-green-400 rounded-full flex items-center justify-center text-white text-[10px] font-bold">上</div>
+                            <div class="flex-1">
+                                <div class="font-medium text-xs">上海土著</div>
+                                <div class="text-xs text-gray-700">武康路附近还有%Arabica咖啡，拍照很出片！</div>
+                                <div class="flex items-center gap-3 mt-1 text-[11px] text-gray-400">
+                                    <span>昨天</span><span>回复</span><span>❤️ 45</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ml-9 mt-2 text-xs text-gray-500">展开5条回复</div>
+                    </div>
+                    <div>
+                        <div class="flex items-start gap-2">
+                            <div class="w-7 h-7 bg-purple-400 rounded-full flex items-center justify-center text-white text-[10px] font-bold">小</div>
+                            <div class="flex-1">
+                                <div class="font-medium text-xs">小小旅行家</div>
+                                <div class="text-xs text-gray-700">请问3月份去上海天气怎么样？适合带老人吗？</div>
+                                <div class="flex items-center gap-3 mt-1 text-[11px] text-gray-400">
+                                    <span>昨天</span><span>回复</span><span>❤️ 23</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 text-center text-xs text-gray-400 py-2">
+                    共 128 条评论 · 下拉加载更多
+                </div>
+            </div>
+
+            <!-- 智能聚合内容区域（初始隐藏） -->
+            <div id="aggregation-section" class="hidden">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">AI匹配 · 基于标题+标签</span>
+                    </div>
+                    <div class="text-[11px] text-[#ff5a5f]">相似度排序 ↓</div>
+                </div>
+                <div id="similar-list" class="space-y-3">
+                    <div class="loading-pulse flex justify-center py-6">
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="w-5 h-5 border-2 border-gray-300 border-t-[#ff5a5f] rounded-full animate-spin"></div>
+                            <span class="text-xs text-gray-400">正在查找相似笔记...</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="expand-btn" class="hidden w-full mt-3 py-2 text-center text-sm text-[#ff5a5f] bg-gray-50 rounded-xl active:bg-gray-100 transition">
+                    展开更多 ∨
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部Tab栏 -->
+    <div class="sticky bottom-0 bg-white border-t border-gray-100 py-2 px-6 flex justify-between">
+        <div class="flex flex-col items-center"><span class="text-xl">🏠</span><span class="text-[10px] text-gray-400">首页</span></div>
+        <div class="flex flex-col items-center"><span class="text-xl">🔍</span><span class="text-[10px] text-gray-400">搜索</span></div>
+        <div class="flex flex-col items-center"><span class="text-xl">➕</span><span class="text-[10px] text-gray-400">发布</span></div>
+        <div class="flex flex-col items-center"><span class="text-xl">🔔</span><span class="text-[10px] text-gray-400">消息</span></div>
+        <div class="flex flex-col items-center"><span class="text-xl">👤</span><span class="text-[10px] text-gray-400">我</span></div>
+    </div>
+
+    <!-- ========== 方案B：悬浮按钮 ========== -->
+    <div id="float-btn" class="fixed bottom-20 right-4 z-30 float-btn">
+        <div class="w-12 h-12 bg-[#ff5a5f] rounded-full flex items-center justify-center shadow-lg cursor-pointer">
+            <span class="text-2xl">🤖</span>
+        </div>
+    </div>
+
+    <!-- 底部弹窗面板 -->
+    <div id="bottom-sheet" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-40 bottom-sheet" style="max-width: 375px; margin: 0 auto;">
+        <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-4"></div>
+        <div class="px-4 pb-6">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-base">🤖</span>
+                    <span class="font-semibold text-base">智能聚合</span>
+                </div>
+                <button id="close-sheet" class="text-gray-400 text-xl">✕</button>
+            </div>
+            <div id="similar-list-sheet" class="space-y-3 max-h-96 overflow-y-auto">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 相似笔记数据
+    const similarNotes = [
+        { id: 1, title: "上海3天2晚保姆级攻略！人均1000元玩转魔都", author: "旅行小野猪", avatar: "野", likes: "2.3w", similarity: 96, tags: ["#上海旅游", "#穷游"] },
+        { id: 2, title: "迪士尼一日游最强路线！刷完12个项目", author: "迪士尼在逃公主", avatar: "公", likes: "5.6w", similarity: 88, tags: ["#迪士尼", "#上海"] },
+        { id: 3, title: "武康路/安福路探店合集｜上海必逛马路", author: "上海吃货小姐姐", avatar: "吃", likes: "1.2w", similarity: 82, tags: ["#武康路", "#探店"] },
+        { id: 4, title: "上海本帮菜Top5！本地人私藏的老店", author: "美食雷达", avatar: "美", likes: "8923", similarity: 79, tags: ["#上海美食", "#本帮菜"] },
+        { id: 5, title: "外滩夜景拍照机位｜避开人流的秘密地点", author: "摄影大叔", avatar: "摄", likes: "3.4k", similarity: 74, tags: ["#外滩", "#夜景"] }
+    ];
+
+    function createCardHTML(note) {
+        return `
+            <div class="similar-card bg-white border border-gray-100 rounded-xl p-3 cursor-pointer" onclick="alert('📖 跳转至：「${note.title}」')">
+                <div class="flex gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-pink-500 rounded-lg flex items-center justify-center text-white text-xs font-bold">${note.avatar}</div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <div class="font-medium text-sm">${note.title}</div>
+                            <div class="bg-red-50 px-1.5 py-0.5 rounded-full"><span class="text-[#ff5a5f] text-xs font-semibold">${note.similarity}%</span></div>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-xs text-gray-500">${note.author}</span>
+                            <span class="text-xs text-gray-400">❤️ ${note.likes}</span>
+                        </div>
+                        <div class="flex gap-1 mt-1">${note.tags.map(t => `<span class="text-[9px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">${t}</span>`).join('')}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Tab切换逻辑
+    const tabComment = document.getElementById('tab-comment');
+    const tabAgg = document.getElementById('tab-aggregation');
+    const commentSection = document.getElementById('comment-section');
+    const aggregationSection = document.getElementById('aggregation-section');
+
+    tabComment.addEventListener('click', () => {
+        tabComment.classList.add('active', 'text-[#ff5a5f]', 'border-[#ff5a5f]');
+        tabComment.classList.remove('text-gray-500', 'border-transparent');
+        tabAgg.classList.remove('active', 'text-[#ff5a5f]', 'border-[#ff5a5f]');
+        tabAgg.classList.add('text-gray-500', 'border-transparent');
+        commentSection.classList.remove('hidden');
+        aggregationSection.classList.add('hidden');
+    });
+
+    tabAgg.addEventListener('click', () => {
+        tabAgg.classList.add('active', 'text-[#ff5a5f]', 'border-[#ff5a5f]');
+        tabAgg.classList.remove('text-gray-500', 'border-transparent');
+        tabComment.classList.remove('active', 'text-[#ff5a5f]', 'border-[#ff5a5f]');
+        tabComment.classList.add('text-gray-500', 'border-transparent');
+        commentSection.classList.add('hidden');
+        aggregationSection.classList.remove('hidden');
+        
+        // 首次切换到智能聚合时加载数据
+        if (!window.aggregationLoaded) {
+            window.aggregationLoaded = true;
+            setTimeout(() => {
+                const container = document.getElementById('similar-list');
+                container.innerHTML = similarNotes.slice(0, 3).map(n => createCardHTML(n)).join('');
+                const expandBtn = document.getElementById('expand-btn');
+                if (similarNotes.length > 3) expandBtn.classList.remove('hidden');
+            }, 300);
+        }
+    });
+
+    // 展开更多
+    let loadedCount = 3;
+    document.getElementById('expand-btn')?.addEventListener('click', function() {
+        if (loadedCount >= similarNotes.length) return;
+        const container = document.getElementById('similar-list');
+        const remaining = similarNotes.slice(loadedCount);
+        container.insertAdjacentHTML('beforeend', remaining.map(n => createCardHTML(n)).join(''));
+        loadedCount = similarNotes.length;
+        this.classList.add('hidden');
+    });
+
+    // 悬浮按钮 + 弹窗
+    const floatBtn = document.getElementById('float-btn');
+    const bottomSheet = document.getElementById('bottom-sheet');
+    const closeSheet = document.getElementById('close-sheet');
+    const sheetList = document.getElementById('similar-list-sheet');
+
+    floatBtn.addEventListener('click', () => {
+        if (sheetList.innerHTML === '') {
+            sheetList.innerHTML = similarNotes.map(n => createCardHTML(n)).join('');
+        }
+        bottomSheet.classList.add('open');
+    });
+    closeSheet.addEventListener('click', () => bottomSheet.classList.remove('open'));
+
+    // 预填充弹窗内容
+    sheetList.innerHTML = similarNotes.map(n => createCardHTML(n)).join('');
+</script>
+
+<div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 4px 10px; border-radius: 20px; font-size: 9px; z-index: 10000;">
+    智能聚合 v3.0 | Tab切换 + 悬浮按钮
+</div>
+</body>
+</html>
